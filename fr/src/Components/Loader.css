@@ -1,0 +1,107 @@
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,107,157,.15), transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(255,143,171,.15), transparent 50%),
+    linear-gradient(135deg, #fff5f8 0%, #ffffff 60%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 99999;
+}
+
+.loader-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  background: rgba(255,255,255,.75);
+  backdrop-filter: saturate(140%) blur(8px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.08);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.loader-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.loader-ring {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff6b9d, #ff8fab, #ff6b9d);
+  filter: drop-shadow(0 8px 20px rgba(255,107,157,.25));
+  animation: ringRotate 1.6s linear infinite;
+  display: grid;
+  place-items: center;
+}
+
+.loader-ring-inner {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.loader-text {
+  font-weight: 700;
+  color: #2d3748;
+}
+
+@keyframes ringRotate { to { transform: rotate(360deg); } }
+
+.brand-title {
+  font-weight: 800;
+  letter-spacing: .4px;
+  color: #2d3748;
+}
+
+.brand-title span { color: #ff6b9d; }
+
+.loader-glow {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  background: radial-gradient(circle, rgba(255,107,157,.15), transparent 60%);
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.petal {
+  position: absolute;
+  width: 10px;
+  height: 24px;
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+  border-radius: 10px 10px 10px 10px / 18px 18px 6px 6px;
+  opacity: .18;
+  animation: fall 6s linear infinite;
+}
+
+.p1 { left: 10%; animation-delay: 0s; }
+.p2 { left: 30%; animation-delay: .8s; }
+.p3 { left: 50%; animation-delay: 1.6s; }
+.p4 { left: 70%; animation-delay: 2.4s; }
+.p5 { left: 85%; animation-delay: 3.2s; }
+.p6 { left: 95%; animation-delay: 4s; }
+
+@keyframes fall {
+  0% { transform: translateY(-20vh) rotate(0deg) scale(.9); }
+  50% { transform: translateY(40vh) rotate(90deg) scale(1); }
+  100% { transform: translateY(100vh) rotate(180deg) scale(.95); }
+}
+
+@media (max-width: 480px) {
+  .loader-box { padding: 1.5rem 2rem; border-radius: 16px; }
+  .loader-logo { width: 54px; height: 54px; }
+  .loader-ring { width: 76px; height: 76px; }
+  .loader-ring-inner { width: 64px; height: 64px; }
+}
+
+

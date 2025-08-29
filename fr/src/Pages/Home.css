@@ -142,12 +142,24 @@ html {
 .home-content {
   max-width: 1400px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
   align-items: center;
   gap: 4rem;
   padding: 0 2rem;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100dvh - 80px);
+}
+
+/* iOS-friendly viewport sizing and alignment fixes */
+.home-content {
+  min-height: calc(100dvh - 80px);
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .home-content { min-height: -webkit-fill-available; }
 }
 
 .home-text-section {
@@ -232,7 +244,6 @@ html {
 }
 
 .home-image-container {
-  margin-left: 150px;
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -240,6 +251,10 @@ html {
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(255, 107, 157, 0.2);
+}
+
+@media (min-width: 1200px) {
+  .home-image-container { margin-left: 120px; }
 }
 
 .home-background-image {
@@ -599,20 +614,23 @@ html {
   }
 
 /* Responsive tasarım */
+@media (max-width: 1200px) {
+  .home-content { grid-template-columns: 1fr 1fr; }
+}
+
 @media (max-width: 1024px) {
   .home-content {
+    grid-template-columns: 1fr;
     gap: 3rem;
     padding: 0 1.5rem;
+    min-height: auto;
   }
   
   .home-title {
     font-size: 3rem;
   }
   
-  .home-image-container {
-    margin-left: 0;
-    height: 500px;
-  }
+  .home-image-container { height: 520px; }
   
   .services-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -644,7 +662,6 @@ html {
 
 @media (max-width: 768px) {
   .home-content {
-    flex-direction: column;
     gap: 3rem;
     padding: 0 1.5rem;
     text-align: center;
@@ -682,16 +699,16 @@ html {
     align-items: center;
     justify-content: center;
     text-align: center !important;
-    gap: 1.2rem;
-    margin-bottom: 2.5rem;
+    gap: 1rem;
+    margin: 0 auto 2rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
   }
   
   .feature {
-    margin-left: 3rem;
-    font-size: 1.2rem;
-    gap: 1rem;
+    margin-left: 0;
+    font-size: 1.1rem;
+    gap: .8rem;
     width: 100%;
     justify-content: center;
     text-align: center !important;
@@ -714,10 +731,11 @@ html {
   }
   
   .home-image-container {
-    height: 450px;
-    max-width: 450px;
+    height: 440px;
+    max-width: 440px;
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(255, 107, 157, 0.25);
+    margin-left: 0;
   }
   
   .services-section {
@@ -903,8 +921,8 @@ html {
   }
   
   .home-image-container {
-    height: 350px;
-    max-width: 350px;
+    height: 340px;
+    max-width: 340px;
     border-radius: 15px;
   }
   
