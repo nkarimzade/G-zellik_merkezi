@@ -6,9 +6,7 @@ function Loader() {
     <div className="loader-overlay" role="status" aria-live="polite" aria-label="Yükleniyor">
       <div className="loader-glow" />
       <div className="loader-box">
-        <div className="loader-ring">
-          <div className="loader-ring-inner" />
-        </div>
+       
         <img src="/logo.png" alt="Tuana Güzellik" className="loader-logo" />
         <div className="brand-title">
           Tuana <span>Güzellik</span>
