@@ -13,7 +13,7 @@ function Home() {
 
   const fetchPrices = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/prices');
+      const response = await fetch('https://g-zellik-merkezi.onrender.com/api/prices');
       if (response.ok) {
         const data = await response.json();
         setPrices(data);

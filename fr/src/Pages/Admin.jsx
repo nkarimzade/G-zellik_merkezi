@@ -111,7 +111,7 @@ function Admin() {
 
   const fetchPrices = async (token) => {
     try {
-      const response = await fetch('http://localhost:5000/api/prices/admin', {
+      const response = await fetch('https://g-zellik-merkezi.onrender.com/api/prices/admin', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -134,7 +134,7 @@ function Admin() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('https://g-zellik-merkezi.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -173,7 +173,7 @@ function Admin() {
   const handleUpdatePrice = async (id, updatedData) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/prices/${id}`, {
+      const response = await fetch(`https://g-zellik-merkezi.onrender.com/api/prices/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/prices/${id}`, {
+      const response = await fetch(`https://g-zellik-merkezi.onrender.com/api/prices/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -223,7 +223,7 @@ function Admin() {
   const handleRestorePrice = async (id) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/prices/${id}/restore`, {
+      const response = await fetch(`https://g-zellik-merkezi.onrender.com/api/prices/${id}/restore`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -258,7 +258,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/prices/category/${encodeURIComponent(category)}`, {
+      const response = await fetch(`https://g-zellik-merkezi.onrender.com/api/prices/category/${encodeURIComponent(category)}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -298,7 +298,7 @@ function Admin() {
         description: newPriceForm.description
       };
       
-      const response = await fetch('http://localhost:5000/api/prices', {
+      const response = await fetch('https://g-zellik-merkezi.onrender.com/api/prices', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
