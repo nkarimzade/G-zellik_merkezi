@@ -23,6 +23,8 @@
   position: relative;
   animation: slideIn 0.3s ease-out;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  -webkit-overflow-scrolling: touch;
+  transform: translateZ(0);
 }
 
 .form-header {
@@ -91,11 +93,20 @@
   z-index: 1;
 }
 
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
+  padding: 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   font-size: 1rem;
@@ -182,6 +193,7 @@
     padding: 1.5rem;
     margin: 1rem;
     max-width: 95%;
+    max-height: 85vh;
   }
   
   .form-header h2 {
@@ -192,10 +204,15 @@
     grid-template-columns: 1fr;
   }
   
+  .form-label {
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+  
   .form-group input,
   .form-group select,
   .form-group textarea {
-    padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+    padding: 0.8rem;
     font-size: 0.95rem;
   }
   
@@ -209,6 +226,8 @@
   .appointment-form-container {
     padding: 1rem;
     margin: 0.5rem;
+    max-width: 98%;
+    max-height: 90vh;
   }
   
   .form-header {
@@ -223,15 +242,16 @@
     gap: 1rem;
   }
   
+  .form-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  
   .form-group input,
   .form-group select,
   .form-group textarea {
-    padding: 0.7rem 0.7rem 0.7rem 2.2rem;
+    padding: 0.7rem;
     font-size: 0.9rem;
-  }
-  
-  .input-icon {
-    left: 0.8rem;
   }
   
   .submit-button {
@@ -240,10 +260,95 @@
   }
 }
 
-/* iOS modal improvements */
-.appointment-overlay { padding: constant(safe-area-inset-top) constant(safe-area-inset-right) constant(safe-area-inset-bottom) constant(safe-area-inset-left); }
-.appointment-form-container { -webkit-overflow-scrolling: touch; }
+/* iPhone ve iOS özel düzeltmeler */
+@media (max-width: 414px) {
+  .appointment-form-container {
+    padding: 0.75rem;
+    margin: 0.25rem;
+    max-width: 99%;
+    max-height: 95vh;
+    border-radius: 15px;
+  }
+  
+  .form-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .close-button {
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+  
+  .appointment-form {
+    gap: 0.75rem;
+  }
+  
+  .form-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+  
+  .form-group textarea {
+    min-height: 60px;
+  }
+  
+  .submit-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+  
+  .submit-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* iOS Safe Area ve Touch düzeltmeleri */
+.appointment-overlay { 
+  padding: constant(safe-area-inset-top) constant(safe-area-inset-right) constant(safe-area-inset-bottom) constant(safe-area-inset-left); 
+}
+
+.appointment-form-container { 
+  -webkit-overflow-scrolling: touch; 
+  -webkit-transform: translateZ(0);
+}
 
 @supports (-webkit-touch-callout: none) {
-  .appointment-overlay { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+  .appointment-overlay { 
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); 
+  }
+  
+  .appointment-form-container {
+    transform: translateZ(0);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    -webkit-appearance: none;
+    border-radius: 10px;
+  }
+  
+  .form-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6b9d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+  }
 }

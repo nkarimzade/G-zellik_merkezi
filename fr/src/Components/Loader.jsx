@@ -14,13 +14,7 @@ function Loader() {
         <div className="loader-text">Güzelliğiniz için hazırlanıyor…</div>
       </div>
 
-      {/* Yumuşak petal/parçacık animasyonları */}
-      <span className="petal p1" />
-      <span className="petal p2" />
-      <span className="petal p3" />
-      <span className="petal p4" />
-      <span className="petal p5" />
-      <span className="petal p6" />
+      
     </div>
   )
 }

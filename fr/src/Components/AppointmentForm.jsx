@@ -95,9 +95,7 @@ Müsait olduğunuzda bana dönüş yapabilir misiniz? Teşekkürler! 😊`
 
         <form onSubmit={handleSubmit} className="appointment-form">
           <div className="form-group">
-            <div className="input-icon">
-              <BsPerson size={20} />
-            </div>
+           
             <input
               type="text"
               name="name"
@@ -109,9 +107,7 @@ Müsait olduğunuzda bana dönüş yapabilir misiniz? Teşekkürler! 😊`
           </div>
 
           <div className="form-group">
-            <div className="input-icon">
-              <BsTelephone size={20} />
-            </div>
+            
             <input
               type="tel"
               name="phone"
@@ -123,9 +119,7 @@ Müsait olduğunuzda bana dönüş yapabilir misiniz? Teşekkürler! 😊`
           </div>
 
           <div className="form-group">
-            <div className="input-icon">
-              <BsCalendarCheck size={20} />
-            </div>
+            <label className="form-label">Hizmet Seçiniz</label>
             <select
               name="service"
               value={formData.service}
@@ -141,9 +135,7 @@ Müsait olduğunuzda bana dönüş yapabilir misiniz? Teşekkürler! 😊`
 
           <div className="form-row">
             <div className="form-group">
-              <div className="input-icon">
-                <BsCalendarCheck size={20} />
-              </div>
+              <label className="form-label">Tarih Seçiniz</label>
               <input
                 type="date"
                 name="date"
@@ -154,9 +146,7 @@ Müsait olduğunuzda bana dönüş yapabilir misiniz? Teşekkürler! 😊`
             </div>
 
             <div className="form-group">
-              <div className="input-icon">
-                <BsClock size={20} />
-              </div>
+              <label className="form-label">Saat Seçiniz</label>
               <select
                 name="time"
                 value={formData.time}

@@ -1,9 +1,30 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Home.css'
 import { BsScissors, BsHandIndex, BsStar, BsPalette, BsHeart, BsBrush, BsFlower1, BsEmojiSmile, BsAward, BsGem, BsPersonBadge, BsCurrencyDollar, BsGeoAlt, BsTelephone, BsWhatsapp, BsClock } from 'react-icons/bs'
 
 
 function Home() {
+  const [prices, setPrices] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPrices();
+  }, []);
+
+  const fetchPrices = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/prices');
+      if (response.ok) {
+        const data = await response.json();
+        setPrices(data);
+      }
+    } catch (error) {
+      console.error('Fiyatlar yüklenirken hata:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const scrollToServices = () => {
     const servicesSection = document.getElementById('hizmetler')
     if (servicesSection) {
@@ -146,162 +167,40 @@ function Home() {
             Kaliteli hizmetlerimizi uygun fiyatlarla sunuyoruz
           </p>
           
-          <div className="price-cards-container">
-            <div className="price-card-item">
-              <div className="price-card-header">
-                <div className="price-card-icon">
-                  <BsScissors size={40} />
-                </div>
-                <h3 className="price-card-title">Epilasyon & Bakım</h3>
-              </div>
-              <div className="price-services-list">
-                <div className="price-service-row">
-                  <span className="service-name-text">Lazer Epilasyon (6 seans, Tepeden Tırnağa)</span>
-                  <span className="service-price-text">₺4.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Bölgesel İncelme (10 seans)</span>
-                  <span className="service-price-text">₺2.500</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Ağda (Tüm vücut)</span>
-                  <span className="service-price-text">₺1.200</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Cımbızlı Epilasyon (Dakika başı)</span>
-                  <span className="service-price-text">₺20</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Kaş Alma</span>
-                  <span className="service-price-text">₺250</span>
-                </div>
-              </div>
+          {loading ? (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+              <p>Fiyatlar yükleniyor...</p>
             </div>
-
-            <div className="price-card-item">
-              <div className="price-card-header">
-                <div className="price-card-icon">
-                  <BsHandIndex size={40} />
+          ) : (
+            <div className="price-cards-container">
+              {Object.entries(prices).map(([category, categoryPrices]) => (
+                <div key={category} className="price-card-item">
+                  <div className="price-card-header">
+                    <div className="price-card-icon">
+                      {category === 'Epilasyon & Bakım' && <BsScissors size={40} />}
+                      {category === 'El & Ayak Bakımı' && <BsHandIndex size={40} />}
+                      {category === 'Cilt & Yüz Bakımı' && <BsStar size={40} />}
+                      {category === 'Kaş & Kirpik' && <BsPalette size={40} />}
+                      {category === 'Kalıcı Makyaj' && <BsBrush size={40} />}
+                      {!['Epilasyon & Bakım', 'El & Ayak Bakımı', 'Cilt & Yüz Bakımı', 'Kaş & Kirpik', 'Kalıcı Makyaj'].includes(category) && <BsHeart size={40} />}
+                    </div>
+                    <h3 className="price-card-title">{category}</h3>
+                  </div>
+                  <div className="price-services-list">
+                    {categoryPrices
+                      .filter(price => price.isActive)
+                      .map((price, index) => (
+                        <div key={index} className="price-service-row">
+                          <span className="service-name-text">{price.serviceName}</span>
+                          <span className="service-price-text">₺{price.price.toLocaleString('tr-TR')}</span>
+                        </div>
+                      ))}
+                  </div>
                 </div>
-                <h3 className="price-card-title">El & Ayak Bakımı</h3>
-              </div>
-              <div className="price-services-list">
-                <div className="price-service-row">
-                  <span className="service-name-text">Manikür (4 seans)</span>
-                  <span className="service-price-text">₺1.600</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Manikür (1 seans)</span>
-                  <span className="service-price-text">₺500</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Pedikür (4 seans)</span>
-                  <span className="service-price-text">₺2.500</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Pedikür (1 seans)</span>
-                  <span className="service-price-text">₺750</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Ayak Bakımı</span>
-                  <span className="service-price-text">₺1.500</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Protez Tırnak (4 seans)</span>
-                  <span className="service-price-text">₺2.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Protez Tırnak (1 seans)</span>
-                  <span className="service-price-text">₺750</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Protez Tırnak Çıkarma</span>
-                  <span className="service-price-text">₺300</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Kalıcı Oje</span>
-                  <span className="service-price-text">₺300</span>
-                </div>
-              </div>
+              ))}
             </div>
-
-            <div className="price-card-item">
-              <div className="price-card-header">
-                <div className="price-card-icon">
-                  <BsStar size={40} />
-                </div>
-                <h3 className="price-card-title">Cilt & Yüz Bakımı</h3>
-              </div>
-              <div className="price-services-list">
-                <div className="price-service-row">
-                  <span className="service-name-text">Cilt Bakımı (4 seans)</span>
-                  <span className="service-price-text">₺3.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Cilt Bakımı (1 seans)</span>
-                  <span className="service-price-text">₺1.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Pudralama İşlemi</span>
-                  <span className="service-price-text">₺2.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Masaj (30 dk)</span>
-                  <span className="service-price-text">₺500</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="price-card-item">
-              <div className="price-card-header">
-                <div className="price-card-icon">
-                  <BsPalette size={40} />
-                </div>
-                <h3 className="price-card-title">Kaş & Kirpik</h3>
-              </div>
-              <div className="price-services-list">
-                <div className="price-service-row">
-                  <span className="service-name-text">İpek Kirpik (4 seans)</span>
-                  <span className="service-price-text">₺2.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">İpek Kirpik (1 seans)</span>
-                  <span className="service-price-text">₺700</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Kirpik Lifting (4 seans)</span>
-                  <span className="service-price-text">₺2.500</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Kirpik Lifting (1 seans)</span>
-                  <span className="service-price-text">₺750</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Microblading Kaş</span>
-                  <span className="service-price-text">₺1.500</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="price-card-item">
-              <div className="price-card-header">
-                <div className="price-card-icon">
-                  <BsHeart size={40} />
-                </div>
-                <h3 className="price-card-title">Kalıcı Makyaj</h3>
-              </div>
-              <div className="price-services-list">
-                <div className="price-service-row">
-                  <span className="service-name-text">Dudak Renklendirme</span>
-                  <span className="service-price-text">₺2.000</span>
-                </div>
-                <div className="price-service-row">
-                  <span className="service-name-text">Dipliner - Eyeliner</span>
-                  <span className="service-price-text">₺1.500</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
