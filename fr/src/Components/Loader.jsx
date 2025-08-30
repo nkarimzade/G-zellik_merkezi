@@ -7,7 +7,7 @@ function Loader() {
       <div className="loader-glow" />
       <div className="loader-box">
        
-        <img src="/logo.png" alt="Tuana Güzellik" className="loader-logo" />
+        <img style={{borderRadius:'50%',width:'80px',height:'80px'}} src="/logo.png" alt="Tuana Güzellik" className="loader-logo" />
         <div className="brand-title">
           Tuana <span>Güzellik</span>
         </div>
