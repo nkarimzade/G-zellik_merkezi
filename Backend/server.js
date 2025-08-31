@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const priceRoutes = require('./routes/prices');
 const adminRoutes = require('./routes/admin');
+const campaignRoutes = require('./routes/campaigns');
 
 // Load environment variables
 dotenv.config();
@@ -17,6 +18,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Statik dosyalar için uploads klasörünü sun
+app.use('/uploads', express.static('uploads'));
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/guzellik-merkezi', {
@@ -30,6 +34,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/guzellik-
 app.use('/api/auth', authRoutes);
 app.use('/api/prices', priceRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/campaigns', campaignRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
