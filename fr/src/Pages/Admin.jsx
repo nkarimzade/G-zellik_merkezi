@@ -616,7 +616,7 @@ function Admin() {
         <div className="header-content">
           <h1>Admin Paneli</h1>
           <div className="admin-info">
-            <span>Hoş geldin, {admin?.fullName}</span>
+            <span>Hoş geldin, {admin?.fullName} Bey</span>
             <button onClick={handleLogout} className="logout-btn">
               Çıkış
             </button>
