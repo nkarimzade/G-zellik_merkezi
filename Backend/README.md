@@ -118,7 +118,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 ### Fiyat Güncelleme
 
 ```bash
-curl -X PUT http://localhost:5000/api/prices/PRICE_ID \
+curl -X PUT http://host:5000/api/prices/PRICE_ID \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -d '{

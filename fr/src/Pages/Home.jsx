@@ -15,7 +15,7 @@ function Home() {
 
   const recordVisit = async () => {
     try {
-      await fetch('http://localhost:5000/api/visits', {
+      await fetch('https://g-zellik-merkezi.onrender.com/api/visits', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

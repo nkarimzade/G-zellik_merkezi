@@ -108,11 +108,15 @@ function Admin() {
     });
   };
 
-  const fetchVisitStats = async () => {
+  const fetchVisitStats = async (token) => {
     try {
+      if (!token) {
+        console.log('Token yok, ziyaret istatistikleri yüklenmiyor');
+        return;
+      }
+      
       setVisitStatsLoading(true);
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/visits/stats', {
+      const response = await fetch('https://g-zellik-merkezi.onrender.com/api/visits/stats', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -121,9 +125,14 @@ function Admin() {
       if (response.ok) {
         const data = await response.json();
         setVisitStats(data);
+        console.log('✅ Ziyaret istatistikleri yüklendi:', data);
+      } else {
+        console.error('❌ Ziyaret istatistikleri yüklenemedi, status:', response.status);
+        const errorData = await response.json();
+        console.error('❌ Error data:', errorData);
       }
     } catch (error) {
-      console.error('Ziyaret istatistikleri yüklenirken hata:', error);
+      console.error('💥 Ziyaret istatistikleri yüklenirken hata:', error);
       showToast('Ziyaret istatistikleri yüklenirken hata oluştu', 'error');
     } finally {
       setVisitStatsLoading(false);
@@ -139,7 +148,7 @@ function Admin() {
       setAdmin(JSON.parse(adminData));
       fetchPrices(token);
       fetchCampaigns(token);
-      fetchVisitStats();
+      fetchVisitStats(token);
     } else {
       setLoading(false);
     }
@@ -156,9 +165,12 @@ function Admin() {
       if (response.ok) {
         const data = await response.json();
         setPrices(data);
+        console.log('✅ Fiyatlar yüklendi');
+      } else {
+        console.error('❌ Fiyatlar yüklenemedi, status:', response.status);
       }
     } catch (error) {
-      console.error('Fiyatlar yüklenirken hata:', error);
+      console.error('💥 Fiyatlar yüklenirken hata:', error);
       showToast('Fiyatlar yüklenirken hata oluştu', 'error');
     } finally {
       setLoading(false);
@@ -176,9 +188,12 @@ function Admin() {
       if (response.ok) {
         const data = await response.json();
         setCampaigns(data);
+        console.log('✅ Kampanyalar yüklendi');
+      } else {
+        console.error('❌ Kampanyalar yüklenemedi, status:', response.status);
       }
     } catch (error) {
-      console.error('Kampanyalar yüklenirken hata:', error);
+      console.error('💥 Kampanyalar yüklenirken hata:', error);
       showToast('Kampanyalar yüklenirken hata oluştu', 'error');
     }
   };
@@ -462,7 +477,7 @@ function Admin() {
     if (!confirmed) return;
 
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = localStorage.getItem('adminToken')
       const response = await fetch(`https://g-zellik-merkezi.onrender.com/api/campaigns/${id}`, {
         method: 'DELETE',
         headers: {
