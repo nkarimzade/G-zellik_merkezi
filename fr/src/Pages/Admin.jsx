@@ -66,7 +66,9 @@ function Admin() {
   const [editingCampaign, setEditingCampaign] = useState(null);
   const [showInactive, setShowInactive] = useState(false);
   const [toasts, setToasts] = useState([]);
-  const [activeTab, setActiveTab] = useState('prices'); // 'prices' veya 'campaigns'
+  const [activeTab, setActiveTab] = useState('prices'); // 'prices', 'campaigns' veya 'visits'
+  const [visitStats, setVisitStats] = useState(null);
+  const [visitStatsLoading, setVisitStatsLoading] = useState(false);
 
   // Login form state
   const [loginForm, setLoginForm] = useState({
@@ -106,6 +108,28 @@ function Admin() {
     });
   };
 
+  const fetchVisitStats = async () => {
+    try {
+      setVisitStatsLoading(true);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('http://localhost:5000/api/visits/stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setVisitStats(data);
+      }
+    } catch (error) {
+      console.error('Ziyaret istatistikleri yüklenirken hata:', error);
+      showToast('Ziyaret istatistikleri yüklenirken hata oluştu', 'error');
+    } finally {
+      setVisitStatsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     const adminData = localStorage.getItem('adminData');
@@ -115,6 +139,7 @@ function Admin() {
       setAdmin(JSON.parse(adminData));
       fetchPrices(token);
       fetchCampaigns(token);
+      fetchVisitStats();
     } else {
       setLoading(false);
     }
@@ -587,6 +612,12 @@ function Admin() {
           >
             Kampanya Yönetimi
           </button>
+          <button 
+            className={`tab-btn ${activeTab === 'visits' ? 'active' : ''}`}
+            onClick={() => setActiveTab('visits')}
+          >
+            Ziyaret İstatistikleri
+          </button>
         </div>
 
         {activeTab === 'prices' && (
@@ -741,6 +772,100 @@ function Admin() {
               </form>
             </div>
           </>
+        )}
+
+        {activeTab === 'visits' && (
+          <div className="visit-stats-section">
+            <h3>Ziyaret İstatistikleri</h3>
+            {visitStatsLoading ? (
+              <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>İstatistikler yükleniyor...</p>
+              </div>
+            ) : visitStats ? (
+              <>
+                {/* Ana İstatistikler */}
+                <div className="stats-grid">
+                  <div className="stat-card primary">
+                    <div className="stat-icon">📊</div>
+                    <div className="stat-content">
+                      <h4>Toplam Ziyaret</h4>
+                      <p className="stat-number">{visitStats.current.total}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card success">
+                    <div className="stat-icon">📅</div>
+                    <div className="stat-content">
+                      <h4>Bugün</h4>
+                      <p className="stat-number">{visitStats.current.daily}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card info">
+                    <div className="stat-icon">📈</div>
+                    <div className="stat-content">
+                      <h4>Bu Ay</h4>
+                      <p className="stat-number">{visitStats.current.monthly}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card warning">
+                    <div className="stat-icon">🎯</div>
+                    <div className="stat-content">
+                      <h4>Bu Yıl</h4>
+                      <p className="stat-number">{visitStats.current.yearly}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Son 7 Gün Grafiği */}
+                <div className="chart-section">
+                  <h4>Son 7 Günün Ziyaret Sayıları</h4>
+                  <div className="chart-container">
+                    {visitStats.last7Days.map((day, index) => (
+                      <div key={index} className="chart-bar">
+                        <div className="bar-label">{day.date}</div>
+                        <div className="bar-container">
+                          <div 
+                            className="bar-fill" 
+                            style={{ height: `${Math.max(day.count * 2, 20)}px` }}
+                          ></div>
+                        </div>
+                        <div className="bar-value">{day.count}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Son 6 Ay Grafiği */}
+                <div className="chart-section">
+                  <h4>Son 6 Ayın Ziyaret Sayıları</h4>
+                  <div className="chart-container">
+                    {visitStats.last6Months.map((month, index) => (
+                      <div key={index} className="chart-bar">
+                        <div className="bar-label">{month.month}</div>
+                        <div className="bar-container">
+                          <div 
+                            className="bar-fill" 
+                            style={{ height: `${Math.max(month.count * 0.5, 20)}px` }}
+                          ></div>
+                        </div>
+                        <div className="bar-value">{month.count}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="error-message">
+                <p>Ziyaret istatistikleri yüklenemedi.</p>
+                <button onClick={fetchVisitStats} className="retry-btn">
+                  Tekrar Dene
+                </button>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Content based on active tab */}

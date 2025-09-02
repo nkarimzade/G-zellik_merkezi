@@ -9,7 +9,22 @@ function Home() {
 
   useEffect(() => {
     fetchPrices();
+    // Ziyaret kaydı gönder
+    recordVisit();
   }, []);
+
+  const recordVisit = async () => {
+    try {
+      await fetch('http://localhost:5000/api/visits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.log('Ziyaret kaydedilemedi:', error);
+    }
+  };
 
   const fetchPrices = async () => {
     try {
