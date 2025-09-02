@@ -825,9 +825,6 @@ function Admin() {
                 {/* Ana İstatistikler */}
                 <div className="stats-grid">
                   <div className="stat-card primary">
-                    <div className="stat-icon">
-                      <BsBarChart size={24} />
-                    </div>
                     <div className="stat-content">
                       <h4>Toplam Ziyaret</h4>
                       <p className="stat-number">{visitStats.current.total}</p>
@@ -835,9 +832,6 @@ function Admin() {
                   </div>
                   
                   <div className="stat-card success">
-                    <div className="stat-icon">
-                      <BsCalendarDay size={24} />
-                    </div>
                     <div className="stat-content">
                       <h4>Bugün</h4>
                       <p className="stat-number">{visitStats.current.daily}</p>
@@ -845,9 +839,6 @@ function Admin() {
                   </div>
                   
                   <div className="stat-card info">
-                    <div className="stat-icon">
-                      <BsGraphUp size={24} />
-                    </div>
                     <div className="stat-content">
                       <h4>Bu Ay</h4>
                       <p className="stat-number">{visitStats.current.monthly}</p>
@@ -855,9 +846,6 @@ function Admin() {
                   </div>
                   
                   <div className="stat-card warning">
-                    <div className="stat-icon">
-                      <BsCalendarYear size={24} />
-                    </div>
                     <div className="stat-content">
                       <h4>Bu Yıl</h4>
                       <p className="stat-number">{visitStats.current.yearly}</p>
