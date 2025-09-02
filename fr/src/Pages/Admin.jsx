@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
-import { BsCash, BsPencil, BsTrash, BsPlus, BsEye, BsEyeSlash, BsSave, BsX, BsCheckCircle, BsExclamationTriangle, BsInfoCircle, BsBarChart, BsCalendarDay, BsGraphUp, BsTarget } from 'react-icons/bs';
+import { BsCash, BsPencil, BsTrash, BsPlus, BsEye, BsEyeSlash, BsSave, BsX, BsCheckCircle, BsExclamationTriangle, BsInfoCircle, BsBarChart, BsCalendarDay, BsGraphUp, BsCalendarYear } from 'react-icons/bs';
 
 // Toast Notification Component
 function Toast({ message, type, onClose }) {
@@ -856,7 +856,7 @@ function Admin() {
                   
                   <div className="stat-card warning">
                     <div className="stat-icon">
-                      <BsTarget size={24} />
+                      <BsCalendarYear size={24} />
                     </div>
                     <div className="stat-content">
                       <h4>Bu Yıl</h4>
