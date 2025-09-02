@@ -69,6 +69,7 @@ function Admin() {
   const [activeTab, setActiveTab] = useState('prices'); // 'prices', 'campaigns' veya 'visits'
   const [visitStats, setVisitStats] = useState(null);
   const [visitStatsLoading, setVisitStatsLoading] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   // Login form state
   const [loginForm, setLoginForm] = useState({
@@ -125,6 +126,7 @@ function Admin() {
       if (response.ok) {
         const data = await response.json();
         setVisitStats(data);
+        setLastUpdate(new Date());
         console.log('✅ Ziyaret istatistikleri yüklendi:', data);
       } else {
         console.error('❌ Ziyaret istatistikleri yüklenemedi, status:', response.status);
@@ -149,6 +151,16 @@ function Admin() {
       fetchPrices(token);
       fetchCampaigns(token);
       fetchVisitStats(token);
+      
+      // Canlı istatistik güncelleme (her 30 saniyede bir)
+      const statsInterval = setInterval(() => {
+        fetchVisitStats(token);
+      }, 30000); // 30 saniye
+      
+      // Cleanup function
+      return () => {
+        clearInterval(statsInterval);
+      };
     } else {
       setLoading(false);
     }
@@ -800,6 +812,18 @@ function Admin() {
             ) : visitStats ? (
               <>
                 {/* Ana İstatistikler */}
+                <div className="stats-header">
+                  <h3>Ziyaret İstatistikleri</h3>
+                  <div className="live-indicator">
+                    <span className="live-dot"></span>
+                    Canlı Güncelleme
+                  </div>
+                  {lastUpdate && (
+                    <div className="last-update">
+                      Son güncelleme: {lastUpdate.toLocaleTimeString('tr-TR')}
+                    </div>
+                  )}
+                </div>
                 <div className="stats-grid">
                   <div className="stat-card primary">
                     <div className="stat-icon">
