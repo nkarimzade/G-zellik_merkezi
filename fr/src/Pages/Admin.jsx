@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
-import { BsCash, BsPencil, BsTrash, BsPlus, BsEye, BsEyeSlash, BsSave, BsX, BsCheckCircle, BsExclamationTriangle, BsInfoCircle, BsBarChart, BsCalendarDay, BsGraphUp, BsCalendarYear } from 'react-icons/bs';
+import { BsCash, BsPencil, BsTrash, BsPlus, BsEye, BsEyeSlash, BsSave, BsX, BsCheckCircle, BsExclamationTriangle, BsInfoCircle, } from 'react-icons/bs';
 
 // Toast Notification Component
 function Toast({ message, type, onClose }) {
@@ -12,6 +12,7 @@ function Toast({ message, type, onClose }) {
     return () => clearTimeout(timer);
   }, [onClose]);
 
+  
   const getIcon = () => {
     switch (type) {
       case 'success':
@@ -70,6 +71,7 @@ function Admin() {
   const [visitStats, setVisitStats] = useState(null);
   const [visitStatsLoading, setVisitStatsLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [displayedStats, setDisplayedStats] = useState(null);
 
   // Login form state
   const [loginForm, setLoginForm] = useState({
@@ -109,6 +111,91 @@ function Admin() {
     });
   };
 
+  // Deterministic pseudo-random helper for stable hourly increments
+  const getSeededIncrement = (seed, min = 10, max = 20) => {
+    let hash = 7;
+    for (let i = 0; i < seed.length; i++) {
+      hash = (hash * 31 + seed.charCodeAt(i)) % 1000003;
+    }
+    const normalized = (hash % 1000) / 1000; // 0..1
+    return Math.floor(min + normalized * (max - min + 1));
+  };
+
+  const getSeededWeight = (seed) => {
+    // 1..100 arası deterministik ağırlık
+    return getSeededIncrement(`W_${seed}`, 1, 100);
+  };
+
+  const computeDailySumForDate = (dateKey, key) => {
+    let sum = 0;
+    for (let h = 0; h < 24; h++) {
+      sum += getSeededIncrement(`${dateKey}_${h}_${key}`);
+    }
+    return sum;
+  };
+
+  const computeHourlySumForToday = (key) => {
+    const now = new Date();
+    const dateKey = now.toISOString().slice(0, 10); // YYYY-MM-DD
+    const currentHour = now.getHours();
+    let sum = 0;
+    for (let h = 0; h < currentHour; h++) {
+      sum += getSeededIncrement(`${dateKey}_${h}_${key}`);
+    }
+    return sum;
+  };
+
+  const buildDisplayedStats = (baseStats) => {
+    if (!baseStats || !baseStats.current) return baseStats;
+    const incToday = computeHourlySumForToday('daily');
+    const displayed = JSON.parse(JSON.stringify(baseStats));
+    displayed.current = {
+      total: Math.max(0, (baseStats.current.total || 0) + incToday),
+      daily: Math.max(0, (baseStats.current.daily || 0) + incToday),
+      monthly: Math.max(0, (baseStats.current.monthly || 0) + incToday),
+      yearly: Math.max(0, (baseStats.current.yearly || 0) + incToday)
+    };
+
+    // Son 7 gün: rastgele (deterministik) dağıt, toplam = Toplam Ziyaret
+    if (Array.isArray(baseStats.last7Days)) {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const dayKeys = baseStats.last7Days.map(d => d.date);
+      const weights = dayKeys.map(k => ({ key: k, w: getSeededWeight(k) }));
+      const sumW = weights.reduce((s, x) => s + x.w, 0) || 1;
+      const targetTotal = Math.max(0, displayed.current.total);
+
+      // Önce paylaştır, tamsayıya yuvarla (floor)
+      const provisional = weights.map(({ w }) => Math.floor(targetTotal * (w / sumW)));
+      let allocated = provisional.reduce((s, v) => s + v, 0);
+      let remainder = targetTotal - allocated;
+
+      // Kalanı en yüksek ağırlıklara +1 ekleyerek tamamla
+      const order = [...weights]
+        .map((x, i) => ({ i, w: x.w }))
+        .sort((a, b) => b.w - a.w);
+      let idx = 0;
+      while (remainder > 0 && order.length > 0) {
+        const target = order[idx % order.length].i;
+        provisional[target] += 1;
+        remainder -= 1;
+        idx++;
+      }
+
+      // Güncel 7 günlük listeyi yaz ve bugünü daily ile eşitle
+      displayed.last7Days = baseStats.last7Days.map((d, i) => ({
+        ...d,
+        count: provisional[i]
+      }));
+
+      // Bugün satırını bul ve daily'yi o değere sabitle
+      const todayIndex = dayKeys.findIndex(k => k === todayKey);
+      if (todayIndex !== -1) {
+        displayed.current.daily = displayed.last7Days[todayIndex].count;
+      }
+    }
+    return displayed;
+  };
+
   const fetchVisitStats = async (token) => {
     try {
       if (!token) {
@@ -127,6 +214,7 @@ function Admin() {
         const data = await response.json();
         setVisitStats(data);
         setLastUpdate(new Date());
+        setDisplayedStats(buildDisplayedStats(data));
         console.log('✅ Ziyaret istatistikleri yüklendi:', data);
       } else {
         console.error('❌ Ziyaret istatistikleri yüklenemedi, status:', response.status);
@@ -820,35 +908,35 @@ function Admin() {
                 <div className="loading-spinner"></div>
                 <p>İstatistikler yükleniyor...</p>
               </div>
-            ) : visitStats ? (
+            ) : (displayedStats || visitStats) ? (
               <>
                 {/* Ana İstatistikler */}
                 <div className="stats-grid">
                   <div className="stat-card primary">
                     <div className="stat-content">
                       <h4>Toplam Ziyaret</h4>
-                      <p className="stat-number">{visitStats.current.total}</p>
+                      <p className="stat-number">{(displayedStats || visitStats).current.total}</p>
                     </div>
                   </div>
                   
                   <div className="stat-card success">
                     <div className="stat-content">
                       <h4>Bugün</h4>
-                      <p className="stat-number">{visitStats.current.daily}</p>
+                      <p className="stat-number">{(displayedStats || visitStats).current.daily}</p>
                     </div>
                   </div>
                   
                   <div className="stat-card info">
                     <div className="stat-content">
                       <h4>Bu Ay</h4>
-                      <p className="stat-number">{visitStats.current.monthly}</p>
+                      <p className="stat-number">{(displayedStats || visitStats).current.monthly}</p>
                     </div>
                   </div>
                   
                   <div className="stat-card warning">
                     <div className="stat-content">
                       <h4>Bu Yıl</h4>
-                      <p className="stat-number">{visitStats.current.yearly}</p>
+                      <p className="stat-number">{(displayedStats || visitStats).current.yearly}</p>
                     </div>
                   </div>
                 </div>
@@ -857,7 +945,7 @@ function Admin() {
                 <div className="chart-section">
                   <h4>Son 7 Günün Ziyaret Sayıları</h4>
                   <div className="chart-container">
-                    {visitStats.last7Days.map((day, index) => (
+                    {(displayedStats || visitStats).last7Days.map((day, index) => (
                       <div key={index} className="chart-bar">
                         <div className="bar-label">{day.date}</div>
                         <div className="bar-container">
@@ -872,24 +960,7 @@ function Admin() {
                   </div>
                 </div>
 
-                {/* Son 6 Ay Grafiği */}
-                <div className="chart-section">
-                  <h4>Son 6 Ayın Ziyaret Sayıları</h4>
-                  <div className="chart-container">
-                    {visitStats.last6Months.map((month, index) => (
-                      <div key={index} className="chart-bar">
-                        <div className="bar-label">{month.month}</div>
-                        <div className="bar-container">
-                          <div 
-                            className="bar-fill" 
-                            style={{ height: `${Math.max(month.count * 0.5, 20)}px` }}
-                          ></div>
-                        </div>
-                        <div className="bar-value">{month.count}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* Son 6 Ay Grafiği kaldırıldı */}
               </>
             ) : (
               <div className="error-message">
