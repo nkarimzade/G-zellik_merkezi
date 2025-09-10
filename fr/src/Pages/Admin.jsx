@@ -895,7 +895,6 @@ function Admin() {
               <h3>Ziyaret İstatistikleri</h3>
               <div className="live-indicator">
                 <span className="live-dot"></span>
-                Canlı Güncelleme
               </div>
               {lastUpdate && (
                 <div className="last-update">
@@ -942,23 +941,7 @@ function Admin() {
                 </div>
 
                 {/* Son 7 Gün Grafiği */}
-                <div className="chart-section">
-                  <h4>Son 7 Günün Ziyaret Sayıları</h4>
-                  <div className="chart-container">
-                    {(displayedStats || visitStats).last7Days.map((day, index) => (
-                      <div key={index} className="chart-bar">
-                        <div className="bar-label">{day.date}</div>
-                        <div className="bar-container">
-                          <div 
-                            className="bar-fill" 
-                            style={{ height: `${Math.max(day.count * 2, 20)}px` }}
-                          ></div>
-                        </div>
-                        <div className="bar-value">{day.count}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            
 
                 {/* Son 6 Ay Grafiği kaldırıldı */}
               </>
