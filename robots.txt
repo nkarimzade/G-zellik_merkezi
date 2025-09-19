@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Sitemap: https://tuanaguzelliksalonu.com/sitemap.xml
+Sitemap: https://tuanagüzelliksalonu.com/sitemap.xml
