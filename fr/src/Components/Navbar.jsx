@@ -28,7 +28,7 @@ function Navbar() {
       <div className="navbar-container">
         <div className="navbar-logo">
           <img style={{width:'60px',height:'60px' , cursor:'pointer'}} src="/logo.png" alt="Güzellik Merkezi Logo" className="logo-img" />
-          <span className="logo-text">Tuana Güzellik Salonu</span>
+          <span className="logo-text">Tuana  Salonu</span>
         </div>
         
         <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
